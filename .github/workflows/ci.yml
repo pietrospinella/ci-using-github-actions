@@ -131,6 +131,7 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: ${{ env.ARTIFACT_NAME }}
+          # /home/runner/work/ci-using-github-actions/ci-using-github-actions/linux-amd64-default
       - name: Build and publish docker image
         uses: VaultVulp/gp-docker-action@1.0.1
         with:
