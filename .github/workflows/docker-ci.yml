@@ -14,7 +14,7 @@ jobs:
   builder:
     name: Builder
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master-fake'
     steps:
       - name: Fetch source code
         uses: actions/checkout@v2
