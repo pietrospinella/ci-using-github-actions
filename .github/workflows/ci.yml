@@ -101,7 +101,7 @@ jobs:
 # SKIP    - { virtual-environment: ubuntu-latest, go-buildtype: default, goos: linux, goarch: '386' } # Target: Linux (386)
 # SKIP    - { virtual-environment: ubuntu-latest, go-buildtype: static, goos: linux, goarch: '386' }  # Target: Linux (386, static)
           # Windows
-          - { virtual-environment: windows-latest, go-buildtype: default, goos: windows, goarch: amd64 } # Target: Windows (amd64)
+#         - { virtual-environment: windows-latest, go-buildtype: default, goos: windows, goarch: amd64 } # Target: Windows (amd64)
 #         - { virtual-environment: windows-latest, go-buildtype: static, goos: windows, goarch: amd64 }  # Target: Windows (amd64, static)
 # SKIP    - { virtual-environment: windows-latest, go-buildtype: default, goos: windows, goarch: '386' } # Target: Windows (386)
 # SKIP    - { virtual-environment: windows-latest, go-buildtype: static, goos: windows, goarch: '386' }  # Target: Windows (386, static)
