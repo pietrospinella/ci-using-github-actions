@@ -1,0 +1,116 @@
+name: Continuous integration
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+    # schedule:
+    #   - cron: '0 * * * *'
+env:
+  OVERRIDE_DEFAULT_GO: 'true'
+  EXECUTABLE_BASENAME: 'app'
+jobs:
+  builder:
+    name: Builder
+    runs-on: ${{ matrix.config.virtual-environment }}
+    strategy:
+      matrix:
+        config:
+          # MacOS
+          - { virtual-environment: macos-latest, go-version: 1.14.x, go-buildtype: default, goos: darwin, goarch: amd64, go-args: '' } # Target: MacOS (amd64)
+          - { virtual-environment: macos-latest, go-version: 1.14.x, go-buildtype: static, goos: darwin, goarch: amd64, go-args: '' }  # Target: MacOS (amd64, static)
+          - { virtual-environment: macos-latest, go-version: 1.14.x, go-buildtype: default, goos: darwin, goarch: '386', go-args: '' } # Target: MacOS (386)
+          - { virtual-environment: macos-latest, go-version: 1.14.x, go-buildtype: static, goos: darwin, goarch: '386', go-args: '' }  # Target: MacOS (386, static)
+          # Linux
+          - { virtual-environment: ubuntu-latest, go-version: 1.14.x, go-buildtype: default, goos: linux, goarch: amd64, go-args: '' } # Target: Linux (amd64)
+          - { virtual-environment: ubuntu-latest, go-version: 1.14.x, go-buildtype: static, goos: linux, goarch: amd64, go-args: '' }  # Target: Linux (amd64, static)
+          - { virtual-environment: ubuntu-latest, go-version: 1.14.x, go-buildtype: default, goos: linux, goarch: arm64, go-args: '' } # Target: Linux (arm64)
+          - { virtual-environment: ubuntu-latest, go-version: 1.14.x, go-buildtype: static, goos: linux, goarch: arm64, go-args: '' }  # Target: Linux (arm64, static)
+          - { virtual-environment: ubuntu-latest, go-version: 1.14.x, go-buildtype: default, goos: linux, goarch: '386', go-args: '' } # Target: Linux (386)
+          - { virtual-environment: ubuntu-latest, go-version: 1.14.x, go-buildtype: static, goos: linux, goarch: '386', go-args: '' }  # Target: Linux (386, static)
+          # Windows
+          - { virtual-environment: windows-latest, go-version: 1.14.x, go-buildtype: default, goos: windows, goarch: amd64, go-args: '' } # Target: Windows (amd64)
+          - { virtual-environment: windows-latest, go-version: 1.14.x, go-buildtype: static, goos: windows, goarch: amd64, go-args: '' }  # Target: Windows (amd64, static)
+          - { virtual-environment: windows-latest, go-version: 1.14.x, go-buildtype: default, goos: windows, goarch: '386', go-args: '' } # Target: Windows (386)
+          - { virtual-environment: windows-latest, go-version: 1.14.x, go-buildtype: static, goos: windows, goarch: '386', go-args: '' }  # Target: Windows (386, static)
+    steps:
+      - name: Fetch source code
+        uses: actions/checkout@v2
+      - name: Install go
+        if: env.OVERRIDE_DEFAULT_GO == 'true'
+        uses: actions/setup-go@v1
+        with:
+          go-version: ${{ matrix.config.go-version }}
+      - name: Build executable on Unix (${{ matrix.config.goos }}/${{ matrix.config.goarch }}/${{ matrix.config.go-buildtype }})
+        if: matrix.config.virtual-environment != 'windows-latest'
+        run: |
+          export GOOS="${{ matrix.config.goos }}" GOARCH="${{ matrix.config.goarch }}" ${{ matrix.config.go-args }}
+          if [ "x${{ matrix.config.go-buildtype }}" = "xdefault" ]; then
+            go build -o "$EXECUTABLE_BASENAME" main.go
+          elif [ "x${{ matrix.config.go-buildtype }}" = "xstatic" ]; then
+            CGO_ENABLED=0 go build -a -ldflags '-extldflags "-static"' -o "$EXECUTABLE_BASENAME" main.go
+          else
+            exit 1
+          fi
+      - name: Build executable on Windows (${{ matrix.config.goos }}/${{ matrix.config.goarch }}/${{ matrix.config.go-buildtype }})
+        if: matrix.config.virtual-environment == 'windows-latest'
+        run: |
+          $env:GOOS="${{ matrix.config.goos }}"; $env:GOARCH="${{ matrix.config.goarch }}"; ${{ matrix.config.go-args }};
+          $name = $env:EXECUTABLE_BASENAME + ".exe"
+          if ("x${{ matrix.config.go-buildtype }}" -eq "xdefault") {
+            go build -o "$name" main.go
+          } elseif ("x${{ matrix.config.go-buildtype }}" -eq "xstatic") {
+            $env:CGO_ENABLED=0; go build -a -ldflags '-extldflags "-static"' -o "$name" main.go
+          } else {
+            exit 1
+          }
+      - name: Upload executable on Unix (${{ matrix.config.goos }}/${{ matrix.config.goarch }}/${{ matrix.config.go-buildtype }})
+        if: matrix.config.virtual-environment != 'windows-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: ${{ matrix.config.goos }}-${{ matrix.config.goarch }}-${{ matrix.config.go-buildtype }}
+          path: ${{ env.EXECUTABLE_BASENAME }}
+      - name: Upload executable on Windows (${{ matrix.config.goos }}/${{ matrix.config.goarch }}/${{ matrix.config.go-buildtype }})
+        if: matrix.config.virtual-environment == 'windows-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: ${{ matrix.config.goos }}-${{ matrix.config.goarch }}-${{ matrix.config.go-buildtype }}
+          path: ${{ env.EXECUTABLE_BASENAME }}.exe
+  tester:
+    name: Tester
+    needs: builder
+    runs-on: ${{ matrix.config.virtual-environment }}
+    strategy:
+      matrix:
+        config:
+          # MacOS
+          - { virtual-environment: macos-latest, go-buildtype: default, goos: darwin, goarch: amd64 } # Target: MacOS (amd64)
+          - { virtual-environment: macos-latest, go-buildtype: static, goos: darwin, goarch: amd64 }  # Target: MacOS (amd64, static)
+#         - { virtual-environment: macos-latest, go-buildtype: default, goos: darwin, goarch: '386' } # Target: MacOS (386)
+#         - { virtual-environment: macos-latest, go-buildtype: static, goos: darwin, goarch: '386' }  # Target: MacOS (386, static)
+          # Linux
+          - { virtual-environment: ubuntu-latest, go-buildtype: default, goos: linux, goarch: amd64 } # Target: Linux (amd64)
+          - { virtual-environment: ubuntu-latest, go-buildtype: static, goos: linux, goarch: amd64 }  # Target: Linux (amd64, static)
+#         - { virtual-environment: ubuntu-latest, go-buildtype: default, goos: linux, goarch: arm64 } # Target: Linux (arm64)
+#         - { virtual-environment: ubuntu-latest, go-buildtype: static, goos: linux, goarch: arm64 }  # Target: Linux (arm64, static)
+#         - { virtual-environment: ubuntu-latest, go-buildtype: default, goos: linux, goarch: '386' } # Target: Linux (386)
+#         - { virtual-environment: ubuntu-latest, go-buildtype: static, goos: linux, goarch: '386' }  # Target: Linux (386, static)
+          # Windows
+          - { virtual-environment: windows-latest, go-buildtype: default, goos: windows, goarch: amd64 } # Target: Windows (amd64)
+          - { virtual-environment: windows-latest, go-buildtype: static, goos: windows, goarch: amd64 }  # Target: Windows (amd64, static)
+#         - { virtual-environment: windows-latest, go-buildtype: default, goos: windows, goarch: '386' } # Target: Windows (386)
+#         - { virtual-environment: windows-latest, go-buildtype: static, goos: windows, goarch: '386' }  # Target: Windows (386, static)
+    steps:
+      - name: Download executable (${{ matrix.config.goos }}/${{ matrix.config.goarch }}/${{ matrix.config.go-buildtype }})
+        uses: actions/download-artifact@v1
+        with:
+          name: ${{ matrix.config.goos }}-${{ matrix.config.goarch }}-${{ matrix.config.go-buildtype }}
+      - name: Test executable on Unix (${{ matrix.config.goos }}/${{ matrix.config.goarch }}/${{ matrix.config.go-buildtype }})
+        if: matrix.config.virtual-environment != 'windows-latest'
+        run: |
+          chmod +x ./${{ matrix.config.goos }}-${{ matrix.config.goarch }}-${{ matrix.config.go-buildtype }}/${{ env.EXECUTABLE_BASENAME }}
+          ./${{ matrix.config.goos }}-${{ matrix.config.goarch }}-${{ matrix.config.go-buildtype }}/${{ env.EXECUTABLE_BASENAME }}
+      - name: Test executable on Windows (${{ matrix.config.goos }}/${{ matrix.config.goarch }}/${{ matrix.config.go-buildtype }})
+        if: matrix.config.virtual-environment == 'windows-latest'
+        run: |
+          ${{ matrix.config.goos }}-${{ matrix.config.goarch }}-${{ matrix.config.go-buildtype }}/${{ env.EXECUTABLE_BASENAME }}.exe
