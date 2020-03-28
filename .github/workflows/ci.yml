@@ -7,8 +7,13 @@ on:
     # schedule:
     #   - cron: '0 * * * *'
 env:
+  # Builder / Tester
   OVERRIDE_DEFAULT_GO: 'true'
   EXECUTABLE_BASENAME: 'app'
+  # Builder (Docker)
+  ARTIFACT_NAME: 'linux-amd64-default'
+  DOCKER_IMAGE_NAME: 'app'
+  DOCKER_IMAGE_TAG: 'latest'
 jobs:
   builder:
     name: Builder
@@ -114,3 +119,21 @@ jobs:
         if: matrix.config.virtual-environment == 'windows-latest'
         run: |
           ${{ matrix.config.goos }}-${{ matrix.config.goarch }}-${{ matrix.config.go-buildtype }}/${{ env.EXECUTABLE_BASENAME }}.exe
+  builder-docker:
+    name: Builder (Docker)
+    needs: builder
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - name: Fetch source code
+        uses: actions/checkout@v2
+      - name: Download artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+      - name: Build and publish docker image
+        uses: VaultVulp/gp-docker-action@1.0.1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          image-name: ${{ env.DOCKER_IMAGE_NAME }}
+          image-tag: ${{ env.DOCKER_IMAGE_TAG }}
