@@ -17,22 +17,22 @@ jobs:
       matrix:
         config:
           # MacOS
-          - { virtual-environment: macos-latest, go-version: 1.14.x, go-buildtype: default, goos: darwin, goarch: amd64, go-args: '' } # Target: MacOS (amd64)
-          - { virtual-environment: macos-latest, go-version: 1.14.x, go-buildtype: static, goos: darwin, goarch: amd64, go-args: '' }  # Target: MacOS (amd64, static)
-          - { virtual-environment: macos-latest, go-version: 1.14.x, go-buildtype: default, goos: darwin, goarch: '386', go-args: '' } # Target: MacOS (386)
-          - { virtual-environment: macos-latest, go-version: 1.14.x, go-buildtype: static, goos: darwin, goarch: '386', go-args: '' }  # Target: MacOS (386, static)
+#         - { virtual-environment: macos-latest, go-version: 1.14.x, go-buildtype: default, goos: darwin, goarch: amd64, go-args: '' } # Target: MacOS (amd64)
+#         - { virtual-environment: macos-latest, go-version: 1.14.x, go-buildtype: static, goos: darwin, goarch: amd64, go-args: '' }  # Target: MacOS (amd64, static)
+#         - { virtual-environment: macos-latest, go-version: 1.14.x, go-buildtype: default, goos: darwin, goarch: '386', go-args: '' } # Target: MacOS (386)
+#         - { virtual-environment: macos-latest, go-version: 1.14.x, go-buildtype: static, goos: darwin, goarch: '386', go-args: '' }  # Target: MacOS (386, static)
           # Linux
           - { virtual-environment: ubuntu-latest, go-version: 1.14.x, go-buildtype: default, goos: linux, goarch: amd64, go-args: '' } # Target: Linux (amd64)
-          - { virtual-environment: ubuntu-latest, go-version: 1.14.x, go-buildtype: static, goos: linux, goarch: amd64, go-args: '' }  # Target: Linux (amd64, static)
-          - { virtual-environment: ubuntu-latest, go-version: 1.14.x, go-buildtype: default, goos: linux, goarch: arm64, go-args: '' } # Target: Linux (arm64)
-          - { virtual-environment: ubuntu-latest, go-version: 1.14.x, go-buildtype: static, goos: linux, goarch: arm64, go-args: '' }  # Target: Linux (arm64, static)
-          - { virtual-environment: ubuntu-latest, go-version: 1.14.x, go-buildtype: default, goos: linux, goarch: '386', go-args: '' } # Target: Linux (386)
-          - { virtual-environment: ubuntu-latest, go-version: 1.14.x, go-buildtype: static, goos: linux, goarch: '386', go-args: '' }  # Target: Linux (386, static)
+#         - { virtual-environment: ubuntu-latest, go-version: 1.14.x, go-buildtype: static, goos: linux, goarch: amd64, go-args: '' }  # Target: Linux (amd64, static)
+#         - { virtual-environment: ubuntu-latest, go-version: 1.14.x, go-buildtype: default, goos: linux, goarch: arm64, go-args: '' } # Target: Linux (arm64)
+#         - { virtual-environment: ubuntu-latest, go-version: 1.14.x, go-buildtype: static, goos: linux, goarch: arm64, go-args: '' }  # Target: Linux (arm64, static)
+#         - { virtual-environment: ubuntu-latest, go-version: 1.14.x, go-buildtype: default, goos: linux, goarch: '386', go-args: '' } # Target: Linux (386)
+#         - { virtual-environment: ubuntu-latest, go-version: 1.14.x, go-buildtype: static, goos: linux, goarch: '386', go-args: '' }  # Target: Linux (386, static)
           # Windows
-          - { virtual-environment: windows-latest, go-version: 1.14.x, go-buildtype: default, goos: windows, goarch: amd64, go-args: '' } # Target: Windows (amd64)
-          - { virtual-environment: windows-latest, go-version: 1.14.x, go-buildtype: static, goos: windows, goarch: amd64, go-args: '' }  # Target: Windows (amd64, static)
-          - { virtual-environment: windows-latest, go-version: 1.14.x, go-buildtype: default, goos: windows, goarch: '386', go-args: '' } # Target: Windows (386)
-          - { virtual-environment: windows-latest, go-version: 1.14.x, go-buildtype: static, goos: windows, goarch: '386', go-args: '' }  # Target: Windows (386, static)
+#         - { virtual-environment: windows-latest, go-version: 1.14.x, go-buildtype: default, goos: windows, goarch: amd64, go-args: '' } # Target: Windows (amd64)
+#         - { virtual-environment: windows-latest, go-version: 1.14.x, go-buildtype: static, goos: windows, goarch: amd64, go-args: '' }  # Target: Windows (amd64, static)
+#         - { virtual-environment: windows-latest, go-version: 1.14.x, go-buildtype: default, goos: windows, goarch: '386', go-args: '' } # Target: Windows (386)
+#         - { virtual-environment: windows-latest, go-version: 1.14.x, go-buildtype: static, goos: windows, goarch: '386', go-args: '' }  # Target: Windows (386, static)
     steps:
       - name: Fetch source code
         uses: actions/checkout@v2
@@ -84,22 +84,22 @@ jobs:
       matrix:
         config:
           # MacOS
-          - { virtual-environment: macos-latest, go-buildtype: default, goos: darwin, goarch: amd64 } # Target: MacOS (amd64)
-          - { virtual-environment: macos-latest, go-buildtype: static, goos: darwin, goarch: amd64 }  # Target: MacOS (amd64, static)
-#         - { virtual-environment: macos-latest, go-buildtype: default, goos: darwin, goarch: '386' } # Target: MacOS (386)
-#         - { virtual-environment: macos-latest, go-buildtype: static, goos: darwin, goarch: '386' }  # Target: MacOS (386, static)
+#         - { virtual-environment: macos-latest, go-buildtype: default, goos: darwin, goarch: amd64 } # Target: MacOS (amd64)
+#         - { virtual-environment: macos-latest, go-buildtype: static, goos: darwin, goarch: amd64 }  # Target: MacOS (amd64, static)
+# SKIP    - { virtual-environment: macos-latest, go-buildtype: default, goos: darwin, goarch: '386' } # Target: MacOS (386)
+# SKIP    - { virtual-environment: macos-latest, go-buildtype: static, goos: darwin, goarch: '386' }  # Target: MacOS (386, static)
           # Linux
           - { virtual-environment: ubuntu-latest, go-buildtype: default, goos: linux, goarch: amd64 } # Target: Linux (amd64)
-          - { virtual-environment: ubuntu-latest, go-buildtype: static, goos: linux, goarch: amd64 }  # Target: Linux (amd64, static)
-#         - { virtual-environment: ubuntu-latest, go-buildtype: default, goos: linux, goarch: arm64 } # Target: Linux (arm64)
-#         - { virtual-environment: ubuntu-latest, go-buildtype: static, goos: linux, goarch: arm64 }  # Target: Linux (arm64, static)
-#         - { virtual-environment: ubuntu-latest, go-buildtype: default, goos: linux, goarch: '386' } # Target: Linux (386)
-#         - { virtual-environment: ubuntu-latest, go-buildtype: static, goos: linux, goarch: '386' }  # Target: Linux (386, static)
+#         - { virtual-environment: ubuntu-latest, go-buildtype: static, goos: linux, goarch: amd64 }  # Target: Linux (amd64, static)
+# SKIP    - { virtual-environment: ubuntu-latest, go-buildtype: default, goos: linux, goarch: arm64 } # Target: Linux (arm64)
+# SKIP    - { virtual-environment: ubuntu-latest, go-buildtype: static, goos: linux, goarch: arm64 }  # Target: Linux (arm64, static)
+# SKIP    - { virtual-environment: ubuntu-latest, go-buildtype: default, goos: linux, goarch: '386' } # Target: Linux (386)
+# SKIP    - { virtual-environment: ubuntu-latest, go-buildtype: static, goos: linux, goarch: '386' }  # Target: Linux (386, static)
           # Windows
           - { virtual-environment: windows-latest, go-buildtype: default, goos: windows, goarch: amd64 } # Target: Windows (amd64)
-          - { virtual-environment: windows-latest, go-buildtype: static, goos: windows, goarch: amd64 }  # Target: Windows (amd64, static)
-#         - { virtual-environment: windows-latest, go-buildtype: default, goos: windows, goarch: '386' } # Target: Windows (386)
-#         - { virtual-environment: windows-latest, go-buildtype: static, goos: windows, goarch: '386' }  # Target: Windows (386, static)
+#         - { virtual-environment: windows-latest, go-buildtype: static, goos: windows, goarch: amd64 }  # Target: Windows (amd64, static)
+# SKIP    - { virtual-environment: windows-latest, go-buildtype: default, goos: windows, goarch: '386' } # Target: Windows (386)
+# SKIP    - { virtual-environment: windows-latest, go-buildtype: static, goos: windows, goarch: '386' }  # Target: Windows (386, static)
     steps:
       - name: Download executable (${{ matrix.config.goos }}/${{ matrix.config.goarch }}/${{ matrix.config.go-buildtype }})
         uses: actions/download-artifact@v1
